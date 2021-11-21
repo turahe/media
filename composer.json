@@ -1,5 +1,5 @@
 {
-    "name": "Turahe/media",
+    "name": "turahe/media",
     "license": "MIT",
     "authors": [
         {
@@ -8,7 +8,7 @@
         }
     ],
     "require": {
-        "php": "^7.4",
+        "php": "^7.4|^8.0",
         "laravel/framework": "~5.8.0|^6.0|^7.0|^8.0",
         "intervention/image": "^2.5"
     },
