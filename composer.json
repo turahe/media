@@ -1,0 +1,36 @@
+{
+    "name": "Turahe/media",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nur Wachid",
+            "email": "nur@wach.id"
+        }
+    ],
+    "require": {
+        "php": "^7.4",
+        "laravel/framework": "~5.8.0|^6.0|^7.0|^8.0",
+        "intervention/image": "^2.5"
+    },
+    "require-dev": {
+        "orchestra/testbench": "~3.8.6|^4.8|^5.2|^6.0",
+        "mockery/mockery": "^1.2.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Turahe\\Media\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Turahe\\Media\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Turahe\\Media\\MediaServiceProvider"
+            ]
+        }
+    }
+}
