@@ -32,5 +32,12 @@
                 "Turahe\\Media\\MediaServiceProvider"
             ]
         }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
     }
 }
