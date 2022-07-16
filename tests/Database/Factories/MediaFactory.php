@@ -25,7 +25,7 @@ class MediaFactory extends \Illuminate\Database\Eloquent\Factories\Factory
             'name' => $this->faker->name,
             'file_name' => $this->faker->name,
             'disk' => $this->faker->randomElement(['local', 'public']),
-            'mime_type' => $this->faker->name,
+            'mime_type' => $this->faker->mimeType(),
             'size' => $this->faker->numberBetween(1, 100),
             'custom_attribute' => $this->faker->name,
         ];

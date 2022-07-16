@@ -3,7 +3,6 @@
 namespace Turahe\Media\Tests;
 
 use Illuminate\Database\Schema\Blueprint;
-use Turahe\Media\MediaServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
@@ -12,14 +11,13 @@ class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->loadMigrationsFrom(__DIR__ . '/migrations');
         $this->setUpDatabase();
     }
 
     protected function getPackageProviders($app)
     {
         return [
-            MediaServiceProvider::class,
+            \Turahe\Media\MediaServiceProvider::class,
         ];
     }
 
@@ -35,13 +33,6 @@ class TestCase extends BaseTestCase
             'database' => ':memory:',
             'prefix' => '',
         ]);
-        $app['config']->set('cache.default', 'database');
-        $app['config']->set('cache.stores.database', [
-            'driver' => 'database',
-            'table' => 'cache',
-            'connection' => null,
-            'lock_connection' => null,
-        ]);
         $app['config']->set('app.key', 'base64:MFOsOH9RomiI2LRdgP4hIeoQJ5nyBhdABdH77UY2zi8=');
     }
 
@@ -51,6 +42,34 @@ class TestCase extends BaseTestCase
             $table->string('key')->unique();
             $table->text('value');
             $table->integer('expiration');
+        });
+
+        $this->app['db']->connection()->getSchemaBuilder()->create('media', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid');
+            $table->string('name');
+            $table->string('file_name');
+            $table->string('disk');
+            $table->string('mime_type');
+            $table->unsignedInteger('size');
+            $table->unsignedBigInteger('record_left')->nullable();
+            $table->unsignedBigInteger('record_right')->nullable();
+            $table->unsignedBigInteger('record_ordering')->nullable();
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->string('custom_attribute')->nullable();
+            $table->softDeletes();
+            $table->timestamps();
+        });
+
+        $this->app['db']->connection()->getSchemaBuilder()->create('mediables', function (Blueprint $table) {
+            $table->unsignedBigInteger('media_id')->index();
+            $table->morphs('mediable');
+            $table->string('group');
+        });
+
+        $this->app['db']->connection()->getSchemaBuilder()->create('subjects', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
         });
     }
 }

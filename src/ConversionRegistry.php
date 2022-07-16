@@ -14,7 +14,7 @@ class ConversionRegistry
      *
      * @return array
      */
-    public function all()
+    public function all(): array
     {
         return $this->conversions;
     }
@@ -54,7 +54,7 @@ class ConversionRegistry
      * @param string $name
      * @return bool
      */
-    public function exists(string $name)
+    public function exists(string $name): bool
     {
         return isset($this->conversions[$name]);
     }

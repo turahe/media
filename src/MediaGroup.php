@@ -13,7 +13,7 @@ class MediaGroup
      * @param string ...$conversions
      * @return $this
      */
-    public function performConversions(...$conversions)
+    public function performConversions(...$conversions): self
     {
         $this->conversions = $conversions;
 
@@ -25,7 +25,7 @@ class MediaGroup
      *
      * @return bool
      */
-    public function hasConversions()
+    public function hasConversions(): bool
     {
         return ! empty($this->conversions);
     }
@@ -35,7 +35,7 @@ class MediaGroup
      *
      * @return array
      */
-    public function getConversions()
+    public function getConversions(): array
     {
         return $this->conversions;
     }

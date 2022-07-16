@@ -20,7 +20,7 @@ trait HasMedia
     public function media()
     {
         return $this
-            ->morphToMany(config('media.model'), 'mediable')
+            ->morphToMany(config('media.model', Media::class), 'mediable')
             ->withPivot('group');
     }
 
@@ -118,7 +118,7 @@ trait HasMedia
      * @param mixed $media
      * @return array
      */
-    protected function parseMediaIds($media)
+    protected function parseMediaIds($media): array
     {
         if ($media instanceof Collection) {
             return $media->modelKeys();

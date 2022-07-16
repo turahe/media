@@ -3,6 +3,7 @@
 namespace Turahe\Media;
 
 use Illuminate\Http\UploadedFile;
+use Turahe\Media\Models\Media;
 
 class MediaUploader
 {
@@ -166,7 +167,7 @@ class MediaUploader
      */
     public function upload()
     {
-        $model = config('media.model');
+        $model = config('media.model', Media::class);
 
         $media = new $model();
 
