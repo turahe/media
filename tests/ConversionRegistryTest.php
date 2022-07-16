@@ -1,9 +1,9 @@
 <?php
 
-namespace Optix\Media\Tests;
+namespace Turahe\Media\Tests;
 
-use Optix\Media\ConversionRegistry;
-use Optix\Media\Exceptions\InvalidConversion;
+use Turahe\Media\ConversionRegistry;
+use Turahe\Media\Exceptions\InvalidConversion;
 
 class ConversionRegistryTest extends TestCase
 {

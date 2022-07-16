@@ -1,12 +1,22 @@
 <?php
 
-namespace Optix\Media\Tests\Models;
+namespace Turahe\Media\Tests\Models;
 
-use Optix\Media\Models\Media as BaseMedia;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Turahe\Media\Models\Media as BaseMedia;
+use Turahe\Media\Tests\Database\Factories\MediaFactory;
 
 class Media extends BaseMedia
 {
-    protected $fillable = [
-        'name', 'file_name', 'disk', 'mime_type', 'size', 'custom_attribute',
-    ];
+    use HasFactory;
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory<static>
+     */
+    protected static function newFactory()
+    {
+        return new MediaFactory();
+    }
 }

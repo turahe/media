@@ -40,7 +40,7 @@ class ImageManipulator
      * @throws InvalidConversion
      * @throws FileNotFoundException
      */
-    public function manipulate(Media $media, array $conversions, $onlyIfMissing = true)
+    public function manipulate(Media $media, array $conversions, bool $onlyIfMissing = true)
     {
         if (! $media->isOfType('image')) {
             return;

@@ -38,6 +38,8 @@ class PerformConversions implements ShouldQueue
      * Execute the job.
      *
      * @return void
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @throws \Turahe\Media\Exceptions\InvalidConversion
      */
     public function handle()
     {

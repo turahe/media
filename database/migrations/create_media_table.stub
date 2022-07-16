@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMediaTable extends Migration
+return new class extends Migration
 {
     public function up()
     {
@@ -21,6 +21,7 @@ class CreateMediaTable extends Migration
             $table->unsignedBigInteger('record_dept')->nullable();
             $table->unsignedBigInteger('record_ordering')->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
+            $table->string('custom_attribute')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -43,4 +44,4 @@ class CreateMediaTable extends Migration
         Schema::dropIfExists('mediables');
         Schema::dropIfExists('media');
     }
-}
+};

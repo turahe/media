@@ -1,14 +1,14 @@
 <?php
 
-namespace Optix\Media\Tests;
+namespace Turahe\Media\Tests;
 
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
-use Optix\Media\Jobs\PerformConversions;
-use Optix\Media\Models\Media;
-use Optix\Media\Tests\Models\Subject;
+use Turahe\Media\Jobs\PerformConversions;
+use Turahe\Media\Tests\Models\Media;
+use Turahe\Media\Tests\Models\Subject;
 
 class HasMediaTest extends TestCase
 {
@@ -32,7 +32,7 @@ class HasMediaTest extends TestCase
     /** @test */
     public function it_can_attach_media_to_the_default_group()
     {
-        $media = factory(Media::class)->create();
+        $media = Media::factory()->create();
 
         $this->subject->attachMedia($media);
 
@@ -45,7 +45,7 @@ class HasMediaTest extends TestCase
     /** @test */
     public function it_can_attach_media_to_a_named_group()
     {
-        $media = factory(Media::class)->create();
+        $media = Media::factory()->create();
 
         $this->subject->attachMedia($media, $group = 'custom');
 
@@ -58,7 +58,7 @@ class HasMediaTest extends TestCase
     /** @test */
     public function it_can_attach_a_collection_of_media()
     {
-        $media = factory(Media::class, 2)->create();
+        $media = Media::factory(2)->create();
 
         $this->subject->attachMedia($media);
 
@@ -79,7 +79,7 @@ class HasMediaTest extends TestCase
     {
         Queue::fake();
 
-        $media = factory(Media::class)->create();
+        $media = Media::factory()->create();
 
         $conversions = ['conversion'];
 
@@ -98,7 +98,7 @@ class HasMediaTest extends TestCase
     {
         Queue::fake();
 
-        $media = factory(Media::class)->create();
+        $media = Media::factory()->create();
 
         $this->subject->attachMedia($media, $group = 'converted-images');
 
@@ -117,7 +117,7 @@ class HasMediaTest extends TestCase
     /** @test */
     public function it_can_get_all_the_media_in_the_default_group()
     {
-        $media = factory(Media::class, 2)->create();
+        $media = Media::factory(2)->create();
 
         $this->subject->attachMedia($media);
 
@@ -130,7 +130,7 @@ class HasMediaTest extends TestCase
     /** @test */
     public function it_can_get_all_the_media_in_a_specified_group()
     {
-        $media = factory(Media::class, 2)->create();
+        $media = Media::factory(2)->create();
 
         $this->subject->attachMedia($media, 'gallery');
 
@@ -152,7 +152,7 @@ class HasMediaTest extends TestCase
     /** @test */
     public function it_can_get_the_first_media_item_in_the_default_group()
     {
-        $media = factory(Media::class)->create();
+        $media = Media::factory()->create();
 
         $this->subject->attachMedia($media);
 
@@ -165,7 +165,7 @@ class HasMediaTest extends TestCase
     /** @test */
     public function it_can_get_the_first_media_item_in_a_specified_group()
     {
-        $media = factory(Media::class)->create();
+        $media = Media::factory()->create();
 
         $this->subject->attachMedia($media, 'gallery');
 
@@ -178,8 +178,8 @@ class HasMediaTest extends TestCase
     /** @test */
     public function it_will_only_get_media_in_the_specified_group()
     {
-        $defaultMedia = factory(Media::class)->create();
-        $galleryMedia = factory(Media::class)->create();
+        $defaultMedia = Media::factory()->create();
+        $galleryMedia = Media::factory()->create();
 
         // Attach media to the default group...
         $this->subject->attachMedia($defaultMedia->id);
@@ -202,7 +202,7 @@ class HasMediaTest extends TestCase
     /** @test */
     public function it_can_get_the_url_of_the_first_media_item_in_the_default_group()
     {
-        $media = factory(Media::class)->create();
+        $media = Media::factory()->create();
 
         $this->subject->attachMedia($media);
 
@@ -214,7 +214,7 @@ class HasMediaTest extends TestCase
     /** @test */
     public function it_can_get_the_url_of_the_first_media_item_in_a_specified_group()
     {
-        $media = factory(Media::class)->create();
+        $media = Media::factory()->create();
 
         $this->subject->attachMedia($media, 'gallery');
 
@@ -226,7 +226,7 @@ class HasMediaTest extends TestCase
     /** @test */
     public function it_can_get_the_converted_image_url_of_the_first_media_item_in_a_specified_group()
     {
-        $media = factory(Media::class)->create();
+        $media = Media::factory()->create();
 
         $this->subject->attachMedia($media, 'gallery');
 
@@ -238,7 +238,7 @@ class HasMediaTest extends TestCase
     /** @test */
     public function it_can_determine_if_there_is_media_in_the_default_group()
     {
-        $media = factory(Media::class)->create();
+        $media = Media::factory()->create();
 
         $this->subject->attachMedia($media);
 
@@ -249,7 +249,7 @@ class HasMediaTest extends TestCase
     /** @test */
     public function it_can_determine_if_there_is_media_in_a_specified_group()
     {
-        $media = factory(Media::class)->create();
+        $media = Media::factory()->create();
 
         $this->subject->attachMedia($media, 'gallery');
 
@@ -260,8 +260,8 @@ class HasMediaTest extends TestCase
     /** @test */
     public function it_can_detach_all_the_media()
     {
-        $mediaOne = factory(Media::class)->create();
-        $mediaTwo = factory(Media::class)->create();
+        $mediaOne = Media::factory()->create();
+        $mediaTwo = Media::factory()->create();
 
         $this->subject->attachMedia($mediaOne);
         $this->subject->attachMedia($mediaTwo, 'gallery');
@@ -274,8 +274,8 @@ class HasMediaTest extends TestCase
     /** @test */
     public function it_can_detach_specific_media_items()
     {
-        $mediaOne = factory(Media::class)->create();
-        $mediaTwo = factory(Media::class)->create();
+        $mediaOne = Media::factory()->create();
+        $mediaTwo = Media::factory()->create();
 
         $this->subject->attachMedia([
             $mediaOne->id, $mediaTwo->id,
@@ -290,8 +290,8 @@ class HasMediaTest extends TestCase
     /** @test */
     public function it_can_detach_all_the_media_in_a_specified_group()
     {
-        $mediaOne = factory(Media::class)->create();
-        $mediaTwo = factory(Media::class)->create();
+        $mediaOne = Media::factory()->create();
+        $mediaTwo = Media::factory()->create();
 
         $this->subject->attachMedia($mediaOne, 'one');
         $this->subject->attachMedia($mediaTwo, 'two');

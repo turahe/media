@@ -1,8 +1,8 @@
 <?php
 
-namespace Optix\Media\Tests;
+namespace Turahe\Media\Tests;
 
-use Optix\Media\MediaServiceProvider;
+use Turahe\Media\MediaServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
@@ -11,8 +11,7 @@ class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
-        $this->withFactories(__DIR__.'/database/factories');
+        $this->loadMigrationsFrom(__DIR__ . '/migrations');
     }
 
     protected function getPackageProviders($app)
@@ -22,6 +21,9 @@ class TestCase extends BaseTestCase
         ];
     }
 
+    /**
+     * @param \Illuminate\Foundation\Application $app
+     */
     protected function getEnvironmentSetUp($app)
     {
         $app['config']->set('database.default', 'sqlite');
@@ -30,5 +32,6 @@ class TestCase extends BaseTestCase
             'database' => ':memory:',
             'prefix' => '',
         ]);
+        $app['config']->set('app.key', 'base64:MFOsOH9RomiI2LRdgP4hIeoQJ5nyBhdABdH77UY2zi8=');
     }
 }

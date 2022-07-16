@@ -1,8 +1,8 @@
 <?php
 
-namespace Optix\Media\Tests;
+namespace Turahe\Media\Tests;
 
-use Optix\Media\MediaGroup;
+use Turahe\Media\MediaGroup;
 
 class MediaGroupTest extends TestCase
 {

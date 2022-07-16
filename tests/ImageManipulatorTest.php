@@ -1,15 +1,15 @@
 <?php
 
-namespace Optix\Media\Tests;
+namespace Turahe\Media\Tests;
 
 use Illuminate\Filesystem\Filesystem;
 use Intervention\Image\Image;
 use Intervention\Image\ImageManager;
 use Mockery;
-use Optix\Media\ConversionRegistry;
-use Optix\Media\Exceptions\InvalidConversion;
-use Optix\Media\ImageManipulator;
-use Optix\Media\Models\Media;
+use Turahe\Media\ConversionRegistry;
+use Turahe\Media\Exceptions\InvalidConversion;
+use Turahe\Media\ImageManipulator;
+use Turahe\Media\Models\Media;
 
 class ImageManipulatorTest extends TestCase
 {

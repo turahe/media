@@ -36,7 +36,7 @@ class MediaUploader
      * @param UploadedFile $file
      * @return MediaUploader
      */
-    public static function fromFile(UploadedFile $file)
+    public static function fromFile(UploadedFile $file): self
     {
         return new static($file);
     }
@@ -47,7 +47,7 @@ class MediaUploader
      * @param UploadedFile $file
      * @return MediaUploader
      */
-    public function setFile(UploadedFile $file)
+    public function setFile(UploadedFile $file): self
     {
         $this->file = $file;
 
@@ -66,7 +66,7 @@ class MediaUploader
      * @param string $name
      * @return MediaUploader
      */
-    public function setName(string $name)
+    public function setName(string $name): self
     {
         $this->name = $name;
 
@@ -77,7 +77,7 @@ class MediaUploader
      * @param string $name
      * @return MediaUploader
      */
-    public function useName(string $name)
+    public function useName(string $name): self
     {
         return $this->setName($name);
     }
@@ -88,7 +88,7 @@ class MediaUploader
      * @param string $fileName
      * @return MediaUploader
      */
-    public function setFileName(string $fileName)
+    public function setFileName(string $fileName): self
     {
         $this->fileName = $this->sanitiseFileName($fileName);
 
@@ -99,7 +99,7 @@ class MediaUploader
      * @param string $fileName
      * @return MediaUploader
      */
-    public function useFileName(string $fileName)
+    public function useFileName(string $fileName): self
     {
         return $this->setFileName($fileName);
     }
@@ -110,7 +110,7 @@ class MediaUploader
      * @param string $fileName
      * @return string
      */
-    protected function sanitiseFileName(string $fileName)
+    protected function sanitiseFileName(string $fileName): string
     {
         return str_replace(['#', '/', '\\', ' '], '-', $fileName);
     }
@@ -121,7 +121,7 @@ class MediaUploader
      * @param string $disk
      * @return MediaUploader
      */
-    public function setDisk(string $disk)
+    public function setDisk(string $disk): self
     {
         $this->disk = $disk;
 
@@ -132,7 +132,7 @@ class MediaUploader
      * @param string $disk
      * @return MediaUploader
      */
-    public function toDisk(string $disk)
+    public function toDisk(string $disk): self
     {
         return $this->setDisk($disk);
     }
@@ -143,7 +143,7 @@ class MediaUploader
      * @param array $attributes
      * @return MediaUploader
      */
-    public function withAttributes(array $attributes)
+    public function withAttributes(array $attributes): self
     {
         $this->attributes = $attributes;
 
@@ -154,7 +154,7 @@ class MediaUploader
      * @param array $properties
      * @return MediaUploader
      */
-    public function withProperties(array $properties)
+    public function withProperties(array $properties): self
     {
         return $this->withAttributes($properties);
     }

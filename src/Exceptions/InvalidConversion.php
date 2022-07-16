@@ -10,7 +10,7 @@ class InvalidConversion extends Exception
      * @param string $name
      * @return InvalidConversion
      */
-    public static function doesNotExist($name)
+    public static function doesNotExist(string $name): InvalidConversion
     {
         return new static("Conversion `{$name}` does not exist");
     }

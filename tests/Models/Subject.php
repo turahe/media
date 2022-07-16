@@ -1,9 +1,9 @@
 <?php
 
-namespace Optix\Media\Tests\Models;
+namespace Turahe\Media\Tests\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Optix\Media\HasMedia;
+use Turahe\Media\HasMedia;
 
 class Subject extends Model
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace Optix\Media\Tests;
+namespace Turahe\Media\Tests;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
-use Optix\Media\MediaUploader;
-use Optix\Media\Models\Media;
-use Optix\Media\Tests\Models\Media as CustomMedia;
+use Turahe\Media\MediaUploader;
+use Turahe\Media\Models\Media;
+use Turahe\Media\Tests\Models\Media as CustomMedia;
 
 class MediaUploaderTest extends TestCase
 {
