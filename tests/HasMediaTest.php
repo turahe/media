@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Queue;
 use Turahe\Media\Jobs\PerformConversions;
 use Turahe\Media\Tests\Models\Media;
 use Turahe\Media\Tests\Models\Subject;
+use Turahe\Media\Models\Media as BaseMedia;
 
 class HasMediaTest extends TestCase
 {
@@ -158,7 +159,7 @@ class HasMediaTest extends TestCase
 
         $firstMedia = $this->subject->getFirstMedia();
 
-        $this->assertInstanceOf(Media::class, $firstMedia);
+        $this->assertInstanceOf(BaseMedia::class, $firstMedia);
         $this->assertEquals($media->id, $firstMedia->id);
     }
 
@@ -171,7 +172,7 @@ class HasMediaTest extends TestCase
 
         $firstMedia = $this->subject->getFirstMedia('gallery');
 
-        $this->assertInstanceOf(Media::class, $firstMedia);
+        $this->assertInstanceOf(BaseMedia::class, $firstMedia);
         $this->assertEquals($media->id, $firstMedia->id);
     }
 
