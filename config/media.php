@@ -13,6 +13,8 @@ return [
      */
     'queue' => null,
 
+    'table' => 'media',
+
     /*
      * The fully qualified class name of the media model.
      */
