@@ -6,11 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Laravel\Scout\Searchable;
+use Spatie\EloquentSortable\Sortable;
+use Spatie\EloquentSortable\SortableTrait;
 
 
-class Media extends Model
+class Media extends Model implements Sortable
 {
     use SoftDeletes;
+    use \Kalnoy\Nestedset\NodeTrait, Searchable {
+        Searchable::usesSoftDelete insteadof \Kalnoy\Nestedset\NodeTrait;
+    }
+    use SortableTrait;
     
     protected $guarded = [];
 
@@ -38,6 +45,11 @@ class Media extends Model
     {
         $this->setParentIdAttribute($value);
     }
+
+    public $sortable = [
+        'order_column_name' => 'record_ordering',
+        'sort_when_creating' => true,
+    ];
     
     public function __construct(array $attributes = [])
     {
