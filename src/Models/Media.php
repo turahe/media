@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Laravel\Scout\Searchable;
+use Kalnoy\Nestedset\NodeTrait;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 
@@ -14,11 +14,9 @@ use Spatie\EloquentSortable\SortableTrait;
 class Media extends Model implements Sortable
 {
     use SoftDeletes;
-    use \Kalnoy\Nestedset\NodeTrait, Searchable {
-        Searchable::usesSoftDelete insteadof \Kalnoy\Nestedset\NodeTrait;
-    }
+    use NodeTrait;
     use SortableTrait;
-    
+
     protected $guarded = [];
 
     public function getLftName()
@@ -50,7 +48,7 @@ class Media extends Model implements Sortable
         'order_column_name' => 'record_ordering',
         'sort_when_creating' => true,
     ];
-    
+
     public function __construct(array $attributes = [])
     {
 
