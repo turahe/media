@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Turahe\Media\Jobs\PerformConversions;
+use Turahe\Media\Models\Media as BaseMedia;
 use Turahe\Media\Tests\Models\Media;
 use Turahe\Media\Tests\Models\Subject;
-use Turahe\Media\Models\Media as BaseMedia;
 
 class HasMediaTest extends TestCase
 {

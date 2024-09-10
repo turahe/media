@@ -27,7 +27,6 @@ trait HasMedia
     /**
      * Determine if there is any media in the specified group.
      *
-     * @param string $group
      * @return mixed
      */
     public function hasMedia(string $group = 'default')
@@ -38,7 +37,6 @@ trait HasMedia
     /**
      * Get all the media in the specified group.
      *
-     * @param string $group
      * @return mixed
      */
     public function getMedia(string $group = 'default')
@@ -49,7 +47,6 @@ trait HasMedia
     /**
      * Get the first media item in the specified group.
      *
-     * @param string $group
      * @return mixed
      */
     public function getFirstMedia(string $group = 'default')
@@ -60,8 +57,6 @@ trait HasMedia
     /**
      * Get the url of the first media item in the specified group.
      *
-     * @param string $group
-     * @param string $conversion
      * @return string
      */
     public function getFirstMediaUrl(string $group = 'default', string $conversion = '')
@@ -76,9 +71,7 @@ trait HasMedia
     /**
      * Attach media to the specified group.
      *
-     * @param mixed $media
-     * @param string $group
-     * @param array $conversions
+     * @param  mixed  $media
      * @return void
      */
     public function attachMedia($media, string $group = 'default', array $conversions = [])
@@ -115,8 +108,7 @@ trait HasMedia
     /**
      * Parse the media id's from the mixed input.
      *
-     * @param mixed $media
-     * @return array
+     * @param  mixed  $media
      */
     protected function parseMediaIds($media): array
     {
@@ -144,12 +136,11 @@ trait HasMedia
     /**
      * Register a new media group.
      *
-     * @param string $name
      * @return MediaGroup
      */
     protected function addMediaGroup(string $name)
     {
-        $group = new MediaGroup();
+        $group = new MediaGroup;
 
         $this->mediaGroups[$name] = $group;
 
@@ -159,7 +150,6 @@ trait HasMedia
     /**
      * Get the media group with the specified name.
      *
-     * @param string $name
      * @return MediaGroup|null
      */
     public function getMediaGroup(string $name)
@@ -170,7 +160,7 @@ trait HasMedia
     /**
      * Detach the specified media.
      *
-     * @param mixed $media
+     * @param  mixed  $media
      * @return void
      */
     public function detachMedia($media = null)
@@ -181,7 +171,6 @@ trait HasMedia
     /**
      * Detach all the media in the specified group.
      *
-     * @param string $group
      * @return void
      */
     public function clearMediaGroup(string $group = 'default')

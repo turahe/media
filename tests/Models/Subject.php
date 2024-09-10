@@ -12,6 +12,6 @@ class Subject extends Model
     public function registerMediaGroups()
     {
         $this->addMediaGroup('converted-images')
-             ->performConversions('conversion');
+            ->performConversions('conversion');
     }
 }

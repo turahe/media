@@ -17,6 +17,6 @@ class Media extends BaseMedia
      */
     protected static function newFactory()
     {
-        return new MediaFactory();
+        return new MediaFactory;
     }
 }

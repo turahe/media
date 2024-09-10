@@ -23,8 +23,6 @@ class PerformConversions implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param Media $media
-     * @param array $conversions
      * @return void
      */
     public function __construct(Media $media, array $conversions)
@@ -38,6 +36,7 @@ class PerformConversions implements ShouldQueue
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      * @throws \Turahe\Media\Exceptions\InvalidConversion
      */

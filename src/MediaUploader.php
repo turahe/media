@@ -25,7 +25,6 @@ class MediaUploader
     /**
      * Create a new uploader instance.
      *
-     * @param UploadedFile $file
      * @return void
      */
     public function __construct(UploadedFile $file)
@@ -33,10 +32,6 @@ class MediaUploader
         $this->setFile($file);
     }
 
-    /**
-     * @param UploadedFile $file
-     * @return MediaUploader
-     */
     public static function fromFile(UploadedFile $file): self
     {
         return new static($file);
@@ -44,9 +39,6 @@ class MediaUploader
 
     /**
      * Set the file to be uploaded.
-     *
-     * @param UploadedFile $file
-     * @return MediaUploader
      */
     public function setFile(UploadedFile $file): self
     {
@@ -63,9 +55,6 @@ class MediaUploader
 
     /**
      * Set the name of the media item.
-     *
-     * @param string $name
-     * @return MediaUploader
      */
     public function setName(string $name): self
     {
@@ -74,10 +63,6 @@ class MediaUploader
         return $this;
     }
 
-    /**
-     * @param string $name
-     * @return MediaUploader
-     */
     public function useName(string $name): self
     {
         return $this->setName($name);
@@ -85,9 +70,6 @@ class MediaUploader
 
     /**
      * Set the name of the file.
-     *
-     * @param string $fileName
-     * @return MediaUploader
      */
     public function setFileName(string $fileName): self
     {
@@ -96,10 +78,6 @@ class MediaUploader
         return $this;
     }
 
-    /**
-     * @param string $fileName
-     * @return MediaUploader
-     */
     public function useFileName(string $fileName): self
     {
         return $this->setFileName($fileName);
@@ -107,9 +85,6 @@ class MediaUploader
 
     /**
      * Sanitise the file name.
-     *
-     * @param string $fileName
-     * @return string
      */
     protected function sanitiseFileName(string $fileName): string
     {
@@ -118,9 +93,6 @@ class MediaUploader
 
     /**
      * Specify the disk where the file will be stored.
-     *
-     * @param string $disk
-     * @return MediaUploader
      */
     public function setDisk(string $disk): self
     {
@@ -129,10 +101,6 @@ class MediaUploader
         return $this;
     }
 
-    /**
-     * @param string $disk
-     * @return MediaUploader
-     */
     public function toDisk(string $disk): self
     {
         return $this->setDisk($disk);
@@ -140,9 +108,6 @@ class MediaUploader
 
     /**
      * Set any custom attributes to be saved to the media item.
-     *
-     * @param array $attributes
-     * @return MediaUploader
      */
     public function withAttributes(array $attributes): self
     {
@@ -151,10 +116,6 @@ class MediaUploader
         return $this;
     }
 
-    /**
-     * @param array $properties
-     * @return MediaUploader
-     */
     public function withProperties(array $properties): self
     {
         return $this->withAttributes($properties);
@@ -169,7 +130,7 @@ class MediaUploader
     {
         $model = config('media.model', Media::class);
 
-        $media = new $model();
+        $media = new $model;
 
         $media->name = $this->name;
         $media->file_name = $this->fileName;

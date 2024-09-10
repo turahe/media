@@ -10,7 +10,7 @@ class ConversionRegistryTest extends TestCase
     /** @test */
     public function it_can_register_and_retrieve_specific_conversions()
     {
-        $conversionRegistry = new ConversionRegistry();
+        $conversionRegistry = new ConversionRegistry;
 
         $conversionRegistry->register('conversion', function () {
             return true;
@@ -24,7 +24,7 @@ class ConversionRegistryTest extends TestCase
     /** @test */
     public function it_can_retrieve_all_the_registered_conversions()
     {
-        $conversionRegistry = new ConversionRegistry();
+        $conversionRegistry = new ConversionRegistry;
 
         $conversionRegistry->register('one', function () {
             return 'one';
@@ -44,7 +44,7 @@ class ConversionRegistryTest extends TestCase
     /** @test */
     public function there_can_only_be_one_conversion_registered_with_the_same_name()
     {
-        $conversionRegistry = new ConversionRegistry();
+        $conversionRegistry = new ConversionRegistry;
 
         $conversionRegistry->register('conversion', function () {
             return 'one';
@@ -61,7 +61,7 @@ class ConversionRegistryTest extends TestCase
     /** @test */
     public function it_can_determine_if_a_conversion_has_been_registered()
     {
-        $conversionRegistry = new ConversionRegistry();
+        $conversionRegistry = new ConversionRegistry;
 
         $conversionRegistry->register('registered', function () {
             //
@@ -76,7 +76,7 @@ class ConversionRegistryTest extends TestCase
     {
         $this->expectException(InvalidConversion::class);
 
-        $conversionRegistry = new ConversionRegistry();
+        $conversionRegistry = new ConversionRegistry;
 
         $conversionRegistry->get('unregistered');
     }

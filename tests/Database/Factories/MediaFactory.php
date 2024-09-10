@@ -2,7 +2,6 @@
 
 namespace Turahe\Media\Tests\Database\Factories;
 
-
 use Turahe\Media\Tests\Models\Media;
 
 class MediaFactory extends \Illuminate\Database\Eloquent\Factories\Factory
@@ -31,4 +30,3 @@ class MediaFactory extends \Illuminate\Database\Eloquent\Factories\Factory
         ];
     }
 }
-

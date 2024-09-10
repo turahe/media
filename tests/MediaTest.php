@@ -11,10 +11,10 @@ class MediaTest extends TestCase
     /** @test */
     public function it_has_an_extension_accessor()
     {
-        $image = new Media();
+        $image = new Media;
         $image->file_name = 'image.png';
 
-        $video = new Media();
+        $video = new Media;
         $video->file_name = 'video.mov';
 
         $this->assertEquals('png', $image->extension);
@@ -24,10 +24,10 @@ class MediaTest extends TestCase
     /** @test */
     public function it_has_a_type_accessor()
     {
-        $image = new Media();
+        $image = new Media;
         $image->mime_type = 'image/png';
 
-        $video = new Media();
+        $video = new Media;
         $video->mime_type = 'video/mov';
 
         $this->assertEquals('image', $image->type);
@@ -37,7 +37,7 @@ class MediaTest extends TestCase
     /** @test */
     public function it_can_determine_its_type()
     {
-        $media = new Media();
+        $media = new Media;
         $media->mime_type = 'image/png';
 
         $this->assertTrue($media->isOfType('image'));
@@ -47,7 +47,7 @@ class MediaTest extends TestCase
     /** @test */
     public function it_can_get_the_path_on_disk_to_the_file()
     {
-        $media = new Media();
+        $media = new Media;
         $media->id = 1;
         $media->file_name = 'image.jpg';
 
@@ -57,7 +57,7 @@ class MediaTest extends TestCase
     /** @test */
     public function it_can_get_the_path_on_disk_to_a_converted_image()
     {
-        $media = new Media();
+        $media = new Media;
         $media->id = 1;
         $media->file_name = 'image.jpg';
 

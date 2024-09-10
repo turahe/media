@@ -18,8 +18,6 @@ class ImageManipulator
     /**
      * Create a new manipulator instance.
      *
-     * @param ConversionRegistry $conversionRegistry
-     * @param ImageManager $imageManager
      * @return void
      */
     public function __construct(ConversionRegistry $conversionRegistry, ImageManager $imageManager)
@@ -32,9 +30,6 @@ class ImageManipulator
     /**
      * Perform the specified conversions on the given media item.
      *
-     * @param Media $media
-     * @param array $conversions
-     * @param bool $onlyIfMissing
      * @return void
      *
      * @throws InvalidConversion

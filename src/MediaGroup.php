@@ -10,7 +10,7 @@ class MediaGroup
     /**
      * Register the conversions to be performed when media is attached.
      *
-     * @param string ...$conversions
+     * @param  string  ...$conversions
      * @return $this
      */
     public function performConversions(...$conversions): self
@@ -22,8 +22,6 @@ class MediaGroup
 
     /**
      * Determine if there are any registered conversions.
-     *
-     * @return bool
      */
     public function hasConversions(): bool
     {
@@ -32,8 +30,6 @@ class MediaGroup
 
     /**
      * Get all the registered conversions.
-     *
-     * @return array
      */
     public function getConversions(): array
     {

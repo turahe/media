@@ -16,7 +16,7 @@ class ImageManipulatorTest extends TestCase
     /** @test */
     public function it_will_apply_registered_conversions()
     {
-        $conversionRegistry = new ConversionRegistry();
+        $conversionRegistry = new ConversionRegistry;
 
         $conversionRegistry->register('resize', function (Image $image) {
             return $image->resize(64);
@@ -54,7 +54,7 @@ class ImageManipulatorTest extends TestCase
     /** @test */
     public function it_will_only_apply_conversions_to_an_image()
     {
-        $conversionRegistry = new ConversionRegistry();
+        $conversionRegistry = new ConversionRegistry;
 
         $conversionRegistry->register('resize', function ($image) {
             return $image->resize(64);
@@ -77,7 +77,7 @@ class ImageManipulatorTest extends TestCase
     {
         $this->expectException(InvalidConversion::class);
 
-        $conversionRegistry = new ConversionRegistry();
+        $conversionRegistry = new ConversionRegistry;
 
         $imageManager = Mockery::mock(ImageManager::class);
 
@@ -94,7 +94,7 @@ class ImageManipulatorTest extends TestCase
     /** @test */
     public function it_will_skip_conversions_if_the_converted_image_already_exists()
     {
-        $conversionRegistry = new ConversionRegistry();
+        $conversionRegistry = new ConversionRegistry;
 
         $conversionRegistry->register('resize', function (Image $image) use (&$conversionApplied) {
             return $image;

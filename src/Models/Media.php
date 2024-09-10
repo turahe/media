@@ -10,11 +10,10 @@ use Kalnoy\Nestedset\NodeTrait;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 
-
 class Media extends Model implements Sortable
 {
-    use SoftDeletes;
     use NodeTrait;
+    use SoftDeletes;
     use SortableTrait;
 
     protected $guarded = [];
@@ -60,8 +59,6 @@ class Media extends Model implements Sortable
 
     /**
      * Get the file extension.
-     *
-     * @return string
      */
     public function getExtensionAttribute(): string
     {
@@ -70,8 +67,6 @@ class Media extends Model implements Sortable
 
     /**
      * Get the file type.
-     *
-     * @return string|null
      */
     public function getTypeAttribute(): ?string
     {
@@ -80,9 +75,6 @@ class Media extends Model implements Sortable
 
     /**
      * Determine if the file is of the specified type.
-     *
-     * @param string $type
-     * @return bool
      */
     public function isOfType(string $type): bool
     {
@@ -92,7 +84,6 @@ class Media extends Model implements Sortable
     /**
      * Get the url to the file.
      *
-     * @param string $conversion
      * @return mixed
      */
     public function getUrl(string $conversion = '')
@@ -105,7 +96,6 @@ class Media extends Model implements Sortable
     /**
      * Get the full path to the file.
      *
-     * @param string $conversion
      * @return mixed
      */
     public function getFullPath(string $conversion = '')
@@ -118,7 +108,6 @@ class Media extends Model implements Sortable
     /**
      * Get the path to the file on disk.
      *
-     * @param string $conversion
      * @return string
      */
     public function getPath(string $conversion = '')
