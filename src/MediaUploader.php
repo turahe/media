@@ -132,6 +132,7 @@ class MediaUploader
 
         $media = new $model;
 
+        $media->hash = $this->file->hashName();
         $media->name = $this->name;
         $media->file_name = $this->fileName;
         $media->disk = $this->disk ?: config('media.disk');
