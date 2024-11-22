@@ -69,7 +69,6 @@ class HasMediaTest extends TestCase
         );
     }
 
-
     public function test_can_get_all_the_media_in_the_default_group()
     {
         $media = Media::factory(2)->create();

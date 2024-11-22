@@ -107,9 +107,6 @@ class Media extends Model implements Sortable
 
     /**
      * Get the path to the file on disk.
-     *
-     * @param string $conversion
-     * @return string
      */
     public function getPath(string $conversion = ''): string
     {

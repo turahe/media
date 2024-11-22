@@ -4,7 +4,6 @@ namespace Turahe\Media;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Turahe\Media\Jobs\PerformConversions;
 use Turahe\Media\Models\Media;
 
 trait HasMedia
