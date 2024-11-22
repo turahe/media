@@ -1,5 +1,6 @@
 {
     "name": "turahe/media",
+    "description": "Associate files with Eloquent models",
     "license": "MIT",
     "authors": [
         {
@@ -8,16 +9,24 @@
         }
     ],
     "require": {
-        "php": "^8.3",
-        "intervention/image": "^3.5",
+        "php": "^8.2",
         "kalnoy/nestedset": "^6.0",
         "spatie/eloquent-sortable": "^4.4"
     },
     "require-dev": {
+        "ext-imagick": "*",
+        "laravel/pint": "^1.17",
         "league/flysystem-aws-s3-v3": "^3.0",
         "mockery/mockery": "^1.6",
-        "laravel/pint": "^1.17",
-        "orchestra/testbench": "^9.6"
+        "orchestra/testbench": "^9.6",
+        "phpstan/phpstan": "^2.0"
+    },
+    "conflict": {
+        "php-ffmpeg/php-ffmpeg": "<0.6.1"
+    },
+    "suggest": {
+        "league/flysystem-aws-s3-v3": "Required to use AWS S3 file storage",
+        "php-ffmpeg/php-ffmpeg": "Required for generating video thumbnails"
     },
     "autoload": {
         "psr-4": {
@@ -35,6 +44,11 @@
                 "Turahe\\Media\\MediaServiceProvider"
             ]
         }
+    },
+    "scripts": {
+        "analyse": "vendor/bin/phpstan analyse src tests",
+        "baseline": "vendor/bin/phpstan analyse --generate-baseline",
+        "test": "vendor/bin/phpunit --testdox"
     },
     "config": {
         "preferred-install": "dist",

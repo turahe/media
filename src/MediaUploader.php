@@ -5,7 +5,7 @@ namespace Turahe\Media;
 use Illuminate\Http\UploadedFile;
 use Turahe\Media\Models\Media;
 
-class MediaUploader
+final class MediaUploader
 {
     /** @var UploadedFile */
     protected $file;

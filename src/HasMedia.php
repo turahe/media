@@ -8,9 +8,6 @@ use Turahe\Media\Models\Media;
 
 trait HasMedia
 {
-    /** @var MediaGroup[] */
-    protected $mediaGroups = [];
-
     /**
      * Get the "media" relationship.
      *
@@ -75,8 +72,6 @@ trait HasMedia
      */
     public function attachMedia($media, string $group = 'default')
     {
-        $this->registerMediaGroups();
-
         $ids = $this->parseMediaIds($media);
 
         $this->media()->attach($ids, [
@@ -100,40 +95,6 @@ trait HasMedia
         }
 
         return (array) $media;
-    }
-
-    /**
-     * Register all the model's media groups.
-     *
-     * @return void
-     */
-    public function registerMediaGroups()
-    {
-        //
-    }
-
-    /**
-     * Register a new media group.
-     *
-     * @return MediaGroup
-     */
-    protected function addMediaGroup(string $name)
-    {
-        $group = new MediaGroup;
-
-        $this->mediaGroups[$name] = $group;
-
-        return $group;
-    }
-
-    /**
-     * Get the media group with the specified name.
-     *
-     * @return MediaGroup|null
-     */
-    public function getMediaGroup(string $name)
-    {
-        return $this->mediaGroups[$name] ?? null;
     }
 
     /**

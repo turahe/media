@@ -8,10 +8,4 @@ use Turahe\Media\HasMedia;
 class Subject extends Model
 {
     use HasMedia;
-
-    public function registerMediaGroups()
-    {
-        $this->addMediaGroup('converted-images')
-            ->performConversions('conversion');
-    }
 }
