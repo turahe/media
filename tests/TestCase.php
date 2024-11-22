@@ -3,10 +3,14 @@
 namespace Turahe\Media\Tests;
 
 use Illuminate\Database\Schema\Blueprint;
-use Orchestra\Testbench\TestCase as BaseTestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 
-class TestCase extends BaseTestCase
+class TestCase extends \Orchestra\Testbench\TestCase
 {
+    use RefreshDatabase;
+    use WithFaker;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -46,7 +50,7 @@ class TestCase extends BaseTestCase
 
         $this->app['db']->connection()->getSchemaBuilder()->create('media', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid');
+            $table->string('hash');
             $table->string('name');
             $table->string('file_name');
             $table->string('disk');

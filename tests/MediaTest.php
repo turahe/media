@@ -8,8 +8,7 @@ use Turahe\Media\Models\Media;
 
 class MediaTest extends TestCase
 {
-    /** @test */
-    public function it_has_an_extension_accessor()
+    public function test_has_an_extension_accessor()
     {
         $image = new Media;
         $image->file_name = 'image.png';
@@ -21,8 +20,7 @@ class MediaTest extends TestCase
         $this->assertEquals('mov', $video->extension);
     }
 
-    /** @test */
-    public function it_has_a_type_accessor()
+    public function test_has_a_type_accessor()
     {
         $image = new Media;
         $image->mime_type = 'image/png';
@@ -34,8 +32,7 @@ class MediaTest extends TestCase
         $this->assertEquals('video', $video->type);
     }
 
-    /** @test */
-    public function it_can_determine_its_type()
+    public function test_can_determine_its_type()
     {
         $media = new Media;
         $media->mime_type = 'image/png';
@@ -44,8 +41,7 @@ class MediaTest extends TestCase
         $this->assertFalse($media->isOfType('video'));
     }
 
-    /** @test */
-    public function it_can_get_the_path_on_disk_to_the_file()
+    public function test_can_get_the_path_on_disk_to_the_file()
     {
         $media = new Media;
         $media->id = 1;
@@ -54,8 +50,7 @@ class MediaTest extends TestCase
         $this->assertEquals('1/image.jpg', $media->getPath());
     }
 
-    /** @test */
-    public function it_can_get_the_path_on_disk_to_a_converted_image()
+    public function test_can_get_the_path_on_disk_to_a_converted_image()
     {
         $media = new Media;
         $media->id = 1;
@@ -67,8 +62,7 @@ class MediaTest extends TestCase
         );
     }
 
-    /** @test */
-    public function it_can_get_the_full_path_to_the_file()
+    public function test_can_get_the_full_path_to_the_file()
     {
         $media = Mockery::mock(Media::class)->makePartial();
 
@@ -82,8 +76,7 @@ class MediaTest extends TestCase
         $this->assertEquals('path', $media->getFullPath());
     }
 
-    /** @test */
-    public function it_can_get_the_full_path_to_a_converted_image()
+    public function test_can_get_the_full_path_to_a_converted_image()
     {
         $media = Mockery::mock(Media::class)->makePartial();
 
@@ -97,8 +90,7 @@ class MediaTest extends TestCase
         $this->assertEquals('path', $media->getFullPath('thumbnail'));
     }
 
-    /** @test */
-    public function it_can_get_the_url_to_the_file()
+    public function test_can_get_the_url_to_the_file()
     {
         $media = Mockery::mock(Media::class)->makePartial();
 
@@ -112,8 +104,7 @@ class MediaTest extends TestCase
         $this->assertEquals('url', $media->getUrl());
     }
 
-    /** @test */
-    public function it_can_get_the_url_to_a_converted_image()
+    public function test_can_get_the_url_to_a_converted_image()
     {
         $media = Mockery::mock(Media::class)->makePartial();
 

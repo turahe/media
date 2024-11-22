@@ -21,6 +21,7 @@ class MediaFactory extends \Illuminate\Database\Eloquent\Factories\Factory
     public function definition()
     {
         return [
+            'hash' => $this->faker->sha1,
             'name' => $this->faker->name,
             'file_name' => $this->faker->name,
             'disk' => $this->faker->randomElement(['local', 'public']),

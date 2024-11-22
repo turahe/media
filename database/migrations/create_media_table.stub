@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('media', function (Blueprint $table) {
+        Schema::create(config('media.table'), function (Blueprint $table) {
             $table->id();
             $table->string('hash')->nullable();
             $table->string('name');

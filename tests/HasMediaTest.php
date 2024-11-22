@@ -5,8 +5,6 @@ namespace Turahe\Media\Tests;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Queue;
-use Turahe\Media\Jobs\PerformConversions;
 use Turahe\Media\Models\Media as BaseMedia;
 use Turahe\Media\Tests\Models\Media;
 use Turahe\Media\Tests\Models\Subject;
@@ -24,14 +22,12 @@ class HasMediaTest extends TestCase
         $this->subject = Subject::create();
     }
 
-    /** @test */
-    public function it_registers_the_media_relationship()
+    public function test_registers_the_media_relationship()
     {
         $this->assertInstanceOf(MorphToMany::class, $this->subject->media());
     }
 
-    /** @test */
-    public function it_can_attach_media_to_the_default_group()
+    public function test_can_attach_media_to_the_default_group()
     {
         $media = Media::factory()->create();
 
@@ -43,8 +39,7 @@ class HasMediaTest extends TestCase
         $this->assertEquals('default', $attachedMedia->pivot->group);
     }
 
-    /** @test */
-    public function it_can_attach_media_to_a_named_group()
+    public function test_can_attach_media_to_a_named_group()
     {
         $media = Media::factory()->create();
 
@@ -56,8 +51,7 @@ class HasMediaTest extends TestCase
         $this->assertEquals($group, $attachedMedia->pivot->group);
     }
 
-    /** @test */
-    public function it_can_attach_a_collection_of_media()
+    public function test_can_attach_a_collection_of_media()
     {
         $media = Media::factory(2)->create();
 
@@ -75,48 +69,8 @@ class HasMediaTest extends TestCase
         );
     }
 
-    /** @test */
-    public function it_will_perform_the_given_conversions_when_media_is_attached()
-    {
-        Queue::fake();
 
-        $media = Media::factory()->create();
-
-        $conversions = ['conversion'];
-
-        $this->subject->attachMedia($media, 'default', $conversions);
-
-        Queue::assertPushed(
-            PerformConversions::class, function ($job) use ($media, $conversions) {
-                return $media->is($job->getMedia())
-                    && empty(array_diff($conversions, $job->getConversions()));
-            }
-        );
-    }
-
-    /** @test */
-    public function it_will_perform_the_conversions_registered_by_the_group_when_media_is_attached()
-    {
-        Queue::fake();
-
-        $media = Media::factory()->create();
-
-        $this->subject->attachMedia($media, $group = 'converted-images');
-
-        Queue::assertPushed(
-            PerformConversions::class, function ($job) use ($media, $group) {
-                $conversions = $this->subject
-                    ->getMediaGroup($group)
-                    ->getConversions();
-
-                return $media->is($job->getMedia())
-                    && empty(array_diff($conversions, $job->getConversions()));
-            }
-        );
-    }
-
-    /** @test */
-    public function it_can_get_all_the_media_in_the_default_group()
+    public function test_can_get_all_the_media_in_the_default_group()
     {
         $media = Media::factory(2)->create();
 
@@ -128,8 +82,7 @@ class HasMediaTest extends TestCase
         $this->assertEmpty($media->diff($defaultMedia));
     }
 
-    /** @test */
-    public function it_can_get_all_the_media_in_a_specified_group()
+    public function test_can_get_all_the_media_in_a_specified_group()
     {
         $media = Media::factory(2)->create();
 
@@ -141,8 +94,7 @@ class HasMediaTest extends TestCase
         $this->assertEmpty($media->diff($galleryMedia));
     }
 
-    /** @test */
-    public function it_can_handle_attempts_to_get_media_from_an_empty_group()
+    public function test_can_handle_attempts_to_get_media_from_an_empty_group()
     {
         $media = $this->subject->getMedia();
 
@@ -150,8 +102,7 @@ class HasMediaTest extends TestCase
         $this->assertTrue($media->isEmpty());
     }
 
-    /** @test */
-    public function it_can_get_the_first_media_item_in_the_default_group()
+    public function test_can_get_the_first_media_item_in_the_default_group()
     {
         $media = Media::factory()->create();
 
@@ -163,8 +114,7 @@ class HasMediaTest extends TestCase
         $this->assertEquals($media->id, $firstMedia->id);
     }
 
-    /** @test */
-    public function it_can_get_the_first_media_item_in_a_specified_group()
+    public function test_can_get_the_first_media_item_in_a_specified_group()
     {
         $media = Media::factory()->create();
 
@@ -176,8 +126,7 @@ class HasMediaTest extends TestCase
         $this->assertEquals($media->id, $firstMedia->id);
     }
 
-    /** @test */
-    public function it_will_only_get_media_in_the_specified_group()
+    public function test_will_only_get_media_in_the_specified_group()
     {
         $defaultMedia = Media::factory()->create();
         $galleryMedia = Media::factory()->create();
@@ -200,8 +149,7 @@ class HasMediaTest extends TestCase
         $this->assertEquals($galleryMedia->id, $firstGalleryMedia->id);
     }
 
-    /** @test */
-    public function it_can_get_the_url_of_the_first_media_item_in_the_default_group()
+    public function test_can_get_the_url_of_the_first_media_item_in_the_default_group()
     {
         $media = Media::factory()->create();
 
@@ -212,8 +160,7 @@ class HasMediaTest extends TestCase
         $this->assertEquals($media->getUrl(), $url);
     }
 
-    /** @test */
-    public function it_can_get_the_url_of_the_first_media_item_in_a_specified_group()
+    public function test_can_get_the_url_of_the_first_media_item_in_a_specified_group()
     {
         $media = Media::factory()->create();
 
@@ -224,8 +171,7 @@ class HasMediaTest extends TestCase
         $this->assertEquals($media->getUrl(), $url);
     }
 
-    /** @test */
-    public function it_can_get_the_converted_image_url_of_the_first_media_item_in_a_specified_group()
+    public function test_can_get_the_converted_image_url_of_the_first_media_item_in_a_specified_group()
     {
         $media = Media::factory()->create();
 
@@ -236,8 +182,7 @@ class HasMediaTest extends TestCase
         $this->assertEquals($media->getUrl('conversion-name'), $url);
     }
 
-    /** @test */
-    public function it_can_determine_if_there_is_media_in_the_default_group()
+    public function test_can_determine_if_there_is_media_in_the_default_group()
     {
         $media = Media::factory()->create();
 
@@ -247,8 +192,7 @@ class HasMediaTest extends TestCase
         $this->assertFalse($this->subject->hasMedia('empty'));
     }
 
-    /** @test */
-    public function it_can_determine_if_there_is_media_in_a_specified_group()
+    public function test_can_determine_if_there_is_media_in_a_specified_group()
     {
         $media = Media::factory()->create();
 
@@ -258,8 +202,7 @@ class HasMediaTest extends TestCase
         $this->assertFalse($this->subject->hasMedia());
     }
 
-    /** @test */
-    public function it_can_detach_all_the_media()
+    public function test_can_detach_all_the_media()
     {
         $mediaOne = Media::factory()->create();
         $mediaTwo = Media::factory()->create();
@@ -272,8 +215,7 @@ class HasMediaTest extends TestCase
         $this->assertFalse($this->subject->media()->exists());
     }
 
-    /** @test */
-    public function it_can_detach_specific_media_items()
+    public function test_can_detach_specific_media_items()
     {
         $mediaOne = Media::factory()->create();
         $mediaTwo = Media::factory()->create();
@@ -288,8 +230,7 @@ class HasMediaTest extends TestCase
         $this->assertEquals($mediaTwo->id, $this->subject->getFirstMedia()->id);
     }
 
-    /** @test */
-    public function it_can_detach_all_the_media_in_a_specified_group()
+    public function test_can_detach_all_the_media_in_a_specified_group()
     {
         $mediaOne = Media::factory()->create();
         $mediaTwo = Media::factory()->create();

@@ -3,7 +3,6 @@
 namespace Turahe\Media\Tests;
 
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Turahe\Media\MediaUploader;
 use Turahe\Media\Models\Media;
@@ -18,14 +17,13 @@ class MediaUploaderTest extends TestCase
         parent::setUp();
 
         // Use a test disk as the default disk...
-        Config::set('media.disk', self::DEFAULT_DISK);
+        $this->app['config']->set('media.disk', self::DEFAULT_DISK);
 
         // Create a test filesystem for the default disk...
         Storage::fake(self::DEFAULT_DISK);
     }
 
-    /** @test */
-    public function it_can_upload_a_file_to_the_default_disk()
+    public function test_can_upload_a_file_to_the_default_disk()
     {
         $file = UploadedFile::fake()->image('file-name.jpg');
 
@@ -39,8 +37,7 @@ class MediaUploaderTest extends TestCase
         $this->assertTrue($filesystem->exists($media->getPath()));
     }
 
-    /** @test */
-    public function it_can_upload_a_file_to_a_specific_disk()
+    public function test_can_upload_a_file_to_a_specific_disk()
     {
         $file = UploadedFile::fake()->image('file-name.jpg');
 
@@ -61,8 +58,7 @@ class MediaUploaderTest extends TestCase
         $this->assertTrue($filesystem->exists($media->getPath()));
     }
 
-    /** @test */
-    public function it_can_change_the_name_of_the_media_model()
+    public function test_can_change_the_name_of_the_media_model()
     {
         $file = UploadedFile::fake()->image('file-name.jpg');
 
@@ -73,8 +69,7 @@ class MediaUploaderTest extends TestCase
         $this->assertEquals($newName, $media->name);
     }
 
-    /** @test */
-    public function it_can_rename_the_file_before_it_gets_uploaded()
+    public function test_can_rename_the_file_before_it_gets_uploaded()
     {
         $file = UploadedFile::fake()->image('file-name.jpg');
 
@@ -85,8 +80,7 @@ class MediaUploaderTest extends TestCase
         $this->assertEquals($newFileName, $media->file_name);
     }
 
-    /** @test */
-    public function it_will_sanitise_the_file_name()
+    public function test_will_sanitise_the_file_name()
     {
         $file = UploadedFile::fake()->image('bad file name#023.jpg');
 
@@ -95,8 +89,7 @@ class MediaUploaderTest extends TestCase
         $this->assertEquals('bad-file-name-023.jpg', $media->file_name);
     }
 
-    /** @test */
-    public function it_can_save_custom_attributes_to_the_media_model()
+    public function test_can_save_custom_attributes_to_the_media_model()
     {
         config()->set('media.model', CustomMedia::class);
 

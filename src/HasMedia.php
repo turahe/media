@@ -74,31 +74,11 @@ trait HasMedia
      * @param  mixed  $media
      * @return void
      */
-    public function attachMedia($media, string $group = 'default', array $conversions = [])
+    public function attachMedia($media, string $group = 'default')
     {
         $this->registerMediaGroups();
 
         $ids = $this->parseMediaIds($media);
-
-        $mediaGroup = $this->getMediaGroup($group);
-
-        if ($mediaGroup && $mediaGroup->hasConversions()) {
-            $conversions = array_merge(
-                $conversions, $mediaGroup->getConversions()
-            );
-        }
-
-        if (! empty($conversions)) {
-            $model = config('media.model');
-
-            $media = $model::findMany($ids);
-
-            $media->each(function ($media) use ($conversions) {
-                PerformConversions::dispatch(
-                    $media, $conversions
-                );
-            });
-        }
 
         $this->media()->attach($ids, [
             'group' => $group,
