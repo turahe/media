@@ -34,7 +34,7 @@ final class MediaUploader
 
     public static function fromFile(UploadedFile $file): self
     {
-        return new static($file);
+        return new self($file);
     }
 
     /**

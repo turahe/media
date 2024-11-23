@@ -10,10 +10,8 @@ trait HasMedia
 {
     /**
      * Get the "media" relationship.
-     *
-     * @return MorphToMany
      */
-    public function media()
+    public function media(): MorphToMany
     {
         return $this
             ->morphToMany(config('media.model', Media::class), 'mediable')
@@ -22,20 +20,16 @@ trait HasMedia
 
     /**
      * Determine if there is any media in the specified group.
-     *
-     * @return mixed
      */
-    public function hasMedia(string $group = 'default')
+    public function hasMedia(string $group = 'default'): bool
     {
         return $this->getMedia($group)->isNotEmpty();
     }
 
     /**
      * Get all the media in the specified group.
-     *
-     * @return mixed
      */
-    public function getMedia(string $group = 'default')
+    public function getMedia(string $group = 'default'): Collection
     {
         return $this->media->where('pivot.group', $group);
     }
@@ -68,9 +62,8 @@ trait HasMedia
      * Attach media to the specified group.
      *
      * @param  mixed  $media
-     * @return void
      */
-    public function attachMedia($media, string $group = 'default')
+    public function attachMedia($media, string $group = 'default'): void
     {
         $ids = $this->parseMediaIds($media);
 
@@ -101,20 +94,17 @@ trait HasMedia
      * Detach the specified media.
      *
      * @param  mixed  $media
-     * @return void
      */
-    public function detachMedia($media = null)
+    public function detachMedia($media = null): bool
     {
-        $this->media()->detach($media);
+        return $this->media()->detach($media);
     }
 
     /**
      * Detach all the media in the specified group.
-     *
-     * @return void
      */
-    public function clearMediaGroup(string $group = 'default')
+    public function clearMediaGroup(string $group = 'default'): bool
     {
-        $this->media()->wherePivot('group', $group)->detach();
+        return $this->media()->wherePivot('group', $group)->detach();
     }
 }
