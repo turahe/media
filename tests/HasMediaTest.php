@@ -141,11 +141,11 @@ class HasMediaTest extends TestCase
         $firstGalleryMedia = $this->subject->getFirstMedia('gallery');
 
         $this->assertCount(1, $allDefaultMedia);
-        $this->assertEquals($defaultMedia->id, $allDefaultMedia->first()->id);
+        $this->assertEquals($defaultMedia->getKey(), $allDefaultMedia->first()->id);
 
         $this->assertCount(1, $allGalleryMedia);
-        $this->assertEquals($galleryMedia->id, $allGalleryMedia->first()->id);
-        $this->assertEquals($galleryMedia->id, $firstGalleryMedia->id);
+        $this->assertEquals($galleryMedia->getKey(), $allGalleryMedia->first()->id);
+        $this->assertEquals($galleryMedia->getKey(), $firstGalleryMedia->id);
     }
 
     public function test_can_get_the_url_of_the_first_media_item_in_the_default_group()

@@ -14,7 +14,13 @@ trait HasMedia
     public function media(): MorphToMany
     {
         return $this
-            ->morphToMany(config('media.model', Media::class), 'mediable')
+            ->morphToMany(
+                config('media.model', Media::class),
+                'mediable',
+                'mediables',
+                'mediable_id',
+                'media_id',
+            )
             ->withPivot('group');
     }
 
@@ -36,20 +42,16 @@ trait HasMedia
 
     /**
      * Get the first media item in the specified group.
-     *
-     * @return mixed
      */
-    public function getFirstMedia(string $group = 'default')
+    public function getFirstMedia(string $group = 'default'): ?Media
     {
         return $this->getMedia($group)->first();
     }
 
     /**
      * Get the url of the first media item in the specified group.
-     *
-     * @return string
      */
-    public function getFirstMediaUrl(string $group = 'default', string $conversion = '')
+    public function getFirstMediaUrl(string $group = 'default', string $conversion = ''): string
     {
         if (! $media = $this->getFirstMedia($group)) {
             return '';

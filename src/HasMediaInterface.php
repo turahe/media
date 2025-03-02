@@ -4,6 +4,7 @@ namespace Turahe\Media;
 
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection;
+use Turahe\Media\Models\Media;
 
 interface HasMediaInterface
 {
@@ -13,13 +14,13 @@ interface HasMediaInterface
 
     public function getMedia(string $group = 'default'): Collection;
 
-    public function getFirstMedia(string $group = 'default');
+    public function getFirstMedia(string $group = 'default'): ?Media;
 
     public function clearMediaGroup(string $group = 'default'): bool;
 
     public function detachMedia($media = null): bool;
 
-    public function getFirstMediaUrl(string $group = 'default', string $conversion = '');
+    public function getFirstMediaUrl(string $group = 'default', string $conversion = ''): string;
 
-    public function attachMedia(HasMediaInterface $media, string $group = 'default');
+    public function attachMedia($media, string $group = 'default');
 }
