@@ -104,4 +104,49 @@ class MediaUploaderTest extends TestCase
         $this->assertInstanceOf(CustomMedia::class, $media);
         $this->assertEquals('Custom attribute', $media->custom_attribute);
     }
+
+    public function test_can_upload_from_url()
+    {
+        // Use Laravel HTTP fake if available
+        if (class_exists('Illuminate\\Support\\Facades\\Http')) {
+            \Illuminate\Support\Facades\Http::fake([
+                'https://example.com/test.jpg' => \Illuminate\Support\Facades\Http::response(
+                    file_get_contents(__DIR__.'/Database/Factories/test-image.jpg'),
+                    200,
+                    ['Content-Type' => 'image/jpeg']
+                ),
+            ]);
+        } else {
+            // If not available, skip this test
+            $this->markTestSkipped('Laravel HTTP fake not available.');
+            return;
+        }
+
+        // Place a test image in the correct location for this test
+        $url = 'https://example.com/test.jpg';
+        $media = MediaUploader::fromUrl($url)->upload();
+
+        $this->assertInstanceOf(Media::class, $media);
+        $this->assertEquals(self::DEFAULT_DISK, $media->disk);
+        $this->assertStringEndsWith('.jpg', $media->file_name);
+        $filesystem = Storage::disk(self::DEFAULT_DISK);
+        $this->assertTrue($filesystem->exists($media->getPath()));
+    }
+
+    public function test_can_upload_from_base64()
+    {
+        // Create a fake image and encode as base64
+        $file = UploadedFile::fake()->image('test.png');
+        $fileContent = file_get_contents($file->getRealPath());
+        $base64 = base64_encode($fileContent);
+        $dataUri = 'data:image/png;base64,' . $base64;
+
+        $media = MediaUploader::fromBase64($dataUri, 'test.png')->upload();
+
+        $this->assertInstanceOf(Media::class, $media);
+        $this->assertEquals(self::DEFAULT_DISK, $media->disk);
+        $this->assertEquals('test.png', $media->file_name);
+        $filesystem = Storage::disk(self::DEFAULT_DISK);
+        $this->assertTrue($filesystem->exists($media->getPath()));
+    }
 }

@@ -1,69 +1,106 @@
 # Laravel Media
 
-An easy solution to attach files to your eloquent models, with image manipulation built in!
+[![Tests](https://github.com/turahe/media/actions/workflows/run-tests.yml/badge.svg)](https://github.com/turahe/media/actions)
+[![Coverage Status](https://img.shields.io/codecov/c/github/turahe/media?style=flat-square)](https://codecov.io/gh/turahe/media)
+[![PHP Version](https://img.shields.io/packagist/php-v/turahe/media?style=flat-square)](https://packagist.org/packages/turahe/media)
+[![StyleCI](https://github.styleci.io/repos/185000000/shield?branch=master)](https://github.styleci.io/repos/185000000)
+[![Latest Stable Version](https://img.shields.io/packagist/v/turahe/media.svg?style=flat-square)](https://packagist.org/packages/turahe/media)
+[![Total Downloads](https://img.shields.io/packagist/dt/turahe/media.svg?style=flat-square)](https://packagist.org/packages/turahe/media)
+[![License](https://img.shields.io/github/license/turahe/media.svg?style=flat-square)](LICENSE)
+
+An easy solution to attach files to your Eloquent models, with image manipulation built in!
+
+---
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Key Concepts](#key-concepts)
+- [Uploading Media](#uploading-media)
+  - [From Uploaded File](#from-uploaded-file)
+  - [From URL](#from-url)
+  - [From Base64 String](#from-base64-string)
+  - [Customizing Uploads](#customizing-uploads)
+- [Associating Media with Models](#associating-media-with-models)
+- [Disassociating & Deleting Media](#disassociating--deleting-media)
+- [Retrieving Media](#retrieving-media)
+- [Image Manipulation & Conversions](#image-manipulation--conversions)
+
+---
+
 ## Installation
 
-You can install the package via composer:
+Install the package via Composer:
 
 ```bash
 composer require turahe/media
 ```
 
-Once installed, you should publish the provided assets to create the necessary migration and config files.
+Publish the assets to create the necessary migration and config files:
 
 ```bash
 php artisan vendor:publish --provider="Turahe\Media\MediaServiceProvider"
 ```
 
-## Key concepts
+---
 
-There are a few key concepts that should be understood before continuing:
+## Key Concepts
 
-* Media can be any type of file, from a jpeg to a zip file. You should specify any file restrictions in your
-  application's validation logic before you attempt to upload a file.
+- **Media** can be any file type (image, document, etc). Restrict file types in your own validation logic.
+- **Media** is uploaded as its own entity and can be managed independently.
+- **Associations**: Media must be attached to a model to be related.
+- **Groups**: Media items are bound to "groups" (e.g., images, documents) for flexible associations.
+- **Conversions**: You can define image conversions (e.g., thumbnails) to be performed when media is attached.
+- **Global Conversions**: Conversions are registered globally and reusable across models.
 
-* Media is uploaded as its own entity. It does not belong to another model in the system when it's created, so items can
-  be managed independently (which makes it the perfect engine for a media manager).
-  
-* Media must be attached to a model for an association to be made.
+---
 
-* Media items are bound to "groups". This makes it easy to associate multiple types of media to a model. For
-  example, a model might have an "images" group and a "documents" group.
-  
-* You can manipulate images using conversions. You can specify conversions to be performed when a media item is
-  associated to a model. For example, you can register a "thumbnail" conversion to run when images are attached to a
-  model's "gallery" group.
+## Uploading Media
 
-* Conversions are registered globally. This means that they can be reused across your application, i.e a Post and a
-  User can have the same sized thumbnail without having to register the same conversion twice.
+Use the `Turahe\Media\MediaUploader` class to handle file uploads. By default, files are saved to the disk specified in your media config, with a sanitized file name, and a media record is created in the database.
 
-## Usage
-
-### Upload media
-
-You should use the `Turahe\Media\MediaUploader` class to handle file uploads.
-
-By default, this class will update files to the disk specified in the media config. It saves them as a sanitised
-version of their original file name, and creates a media record in the database with the file's details.
-
-You can also customise certain properties of the file before it's uploaded.
+### From Uploaded File
 
 ```php
 $file = $request->file('file');
 
 // Default usage
 $media = MediaUploader::fromFile($file)->upload();
+```
 
-// Custom usage
+### Customizing Uploads
+
+You can customize the file name and media name before uploading:
+
+```php
 $media = MediaUploader::fromFile($file)
     ->useFileName('custom-file-name.jpeg')
     ->useName('Custom media name')
     ->upload();
 ```
 
-### Associate media with a model
+### From URL
 
-In order to associate a media item with a model, you must first include the `Turahe\Media\HasMedia` trait.
+Upload media directly from a remote URL:
+
+```php
+$media = MediaUploader::fromUrl('https://example.com/image.jpg')->upload();
+```
+
+### From Base64 String
+
+Upload media from a base64-encoded string (with or without a data URI prefix):
+
+```php
+$base64 = '...'; // your base64 string
+$media = MediaUploader::fromBase64($base64, 'image.png')->upload();
+```
+
+---
+
+## Associating Media with Models
+
+To associate media with a model, include the `Turahe\Media\HasMedia` trait:
 
 ```php
 class Post extends Model
@@ -72,11 +109,7 @@ class Post extends Model
 }
 ```
 
-This trait will setup the relationship between your model and the media model. It's primary purpose is to provide a
-fluent api for attaching and retrieving media.
-
-Once included, you can attach media to the model as demonstrated below. The first parameter of the attach media method
-can either be a media model instance, an id, or an iterable list of models / ids.
+Attach media to a model:
 
 ```php
 $post = Post::first();
@@ -88,33 +121,34 @@ $post->attachMedia($media);
 $post->attachMedia($media, 'custom-group');
 ```
 
-### Disassociate media from a model
+---
 
-To disassociate media from a model, you should call the provided `detachMedia` method.
+## Disassociating & Deleting Media
+
+Detach media from a model:
 
 ```php
-// Detach all the media
+// Detach all media
 $post->detachMedia();
 
-// Detach the specified media
+// Detach specific media
 $post->detachMedia($media);
 
-// Detach all the media in a group
+// Detach all media in a group
 $post->clearMediaGroup('your-group');
-``` 
+```
 
-If you want to delete a media item, you should do it the same way you would for any other model in your application.
+Delete a media item (removes file and associations):
 
 ```php
 Media::first()->delete();
 ```
 
-Doing so will delete the file from your filesystem, and also remove any association between the media item and your
-application's models.
+---
 
-### Retrieve media
+## Retrieving Media
 
-Another feature of the `HasMedia` trait is the ability to retrieve media.
+Retrieve media attached to a model:
 
 ```php
 // All media in the default group
@@ -130,23 +164,21 @@ $post->getFirstMedia();
 $post->getFirstMedia('custom-group');
 ```
 
-As well as retrieve media items, you can also retrieve attributes of the media model directly from your model.
+Get URLs for media:
 
 ```php
-// Url of the first media item in the default group
+// URL of the first media item in the default group
 $post->getFirstMediaUrl();
 
-// Url of the first media item in a custom group
+// URL of the first media item in a custom group
 $post->getFirstMediaUrl('custom-group');
 ```
 
-### Manipulate Images
+---
 
-This package provides a fluent api to manipulate images. You can specify a model to perform "conversions" when
-media is attached to a group. It uses the familiar `intervention/image` library under the hood, so images can be
-manipulated using all of the library's provided options.
+## Image Manipulation & Conversions
 
-To get started, you should first register a conversion in one of your application's service providers:
+You can define image conversions (e.g., thumbnails) using the familiar `intervention/image` library. Register conversions in a service provider:
 
 ```php
 use Intervention\Image\Image;
@@ -163,8 +195,7 @@ class AppServiceProvider extends ServiceProvider
 }
 ```
 
-Once you've registered a conversion, you should configure a media group to perform the conversion when media is
-attached to your model.
+Configure a media group to perform conversions:
 
 ```php
 class Post extends Model
@@ -179,8 +210,7 @@ class Post extends Model
 }
 ```
 
-Now when a media item is attached to the "gallery" group, a converted image will be generated. You can get the url of
-the converted image as demonstrated below:
+Get the URL of a converted image:
 
 ```php
 // The thumbnail of the first image in the gallery group
