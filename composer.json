@@ -10,7 +10,7 @@
     ],
     "require": {
         "php": "^8.4",
-        "guzzlehttp/guzzle": "^8.3",
+        "guzzlehttp/guzzle": "^7.9 || ^8.3",
         "kalnoy/nestedset": "^6.0.6 || ^7.0",
         "spatie/eloquent-sortable": "^5.0"
     },
