@@ -2,7 +2,9 @@
 
 namespace Turahe\Media;
 
+use GuzzleHttp\Client;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Http;
 use Turahe\Media\Models\Media;
 
 final class MediaUploader
@@ -40,15 +42,13 @@ final class MediaUploader
     /**
      * Create a new uploader instance from a URL.
      *
-     * @param string $url
-     * @return self
      * @throws \Exception
      */
     public static function fromUrl(string $url): self
     {
         // Try to get the file name from the URL
         $fileName = basename(parse_url($url, PHP_URL_PATH));
-        if (!$fileName) {
+        if (! $fileName) {
             throw new \Exception('Unable to determine file name from URL.');
         }
 
@@ -56,14 +56,14 @@ final class MediaUploader
         try {
             if (class_exists('Illuminate\\Support\\Facades\\Http')) {
                 // Laravel HTTP client (wrapper for Guzzle)
-                $response = \Illuminate\Support\Facades\Http::get($url);
-                if (!$response->successful()) {
+                $response = Http::get($url);
+                if (! $response->successful()) {
                     throw new \Exception('Failed to download file from URL.');
                 }
                 $fileContent = $response->body();
             } else {
                 // Direct Guzzle usage
-                $client = new \GuzzleHttp\Client();
+                $client = new Client;
                 $response = $client->get($url);
                 if ($response->getStatusCode() >= 400) {
                     throw new \Exception('Failed to download file from URL.');
@@ -71,7 +71,7 @@ final class MediaUploader
                 $fileContent = $response->getBody()->getContents();
             }
         } catch (\Exception $e) {
-            throw new \Exception('Failed to download file from URL: ' . $e->getMessage());
+            throw new \Exception('Failed to download file from URL: '.$e->getMessage());
         }
 
         // Store the file temporarily
@@ -96,12 +96,9 @@ final class MediaUploader
     /**
      * Create a new uploader instance from a base64-encoded string.
      *
-     * @param string $base64
-     * @param string|null $fileName
-     * @return self
      * @throws \Exception
      */
-    public static function fromBase64(string $base64, string $fileName = null): self
+    public static function fromBase64(string $base64, ?string $fileName = null): self
     {
         // Extract base64 data if data URI scheme is used
         if (preg_match('/^data:(.*?);base64,(.*)$/', $base64, $matches)) {
@@ -122,9 +119,9 @@ final class MediaUploader
         $mimeType = mime_content_type($tmpFilePath) ?: 'application/octet-stream';
 
         // Generate file name if not provided
-        if (!$fileName) {
+        if (! $fileName) {
             $extension = explode('/', $mimeType)[1] ?? 'bin';
-            $fileName = uniqid('media_', true) . '.' . $extension;
+            $fileName = uniqid('media_', true).'.'.$extension;
         }
 
         // Create UploadedFile instance

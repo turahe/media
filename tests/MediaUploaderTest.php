@@ -3,6 +3,7 @@
 namespace Turahe\Media\Tests;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Turahe\Media\MediaUploader;
 use Turahe\Media\Models\Media;
@@ -109,8 +110,8 @@ class MediaUploaderTest extends TestCase
     {
         // Use Laravel HTTP fake if available
         if (class_exists('Illuminate\\Support\\Facades\\Http')) {
-            \Illuminate\Support\Facades\Http::fake([
-                'https://example.com/test.jpg' => \Illuminate\Support\Facades\Http::response(
+            Http::fake([
+                'https://example.com/test.jpg' => Http::response(
                     file_get_contents(__DIR__.'/Database/Factories/test-image.jpg'),
                     200,
                     ['Content-Type' => 'image/jpeg']
@@ -119,6 +120,7 @@ class MediaUploaderTest extends TestCase
         } else {
             // If not available, skip this test
             $this->markTestSkipped('Laravel HTTP fake not available.');
+
             return;
         }
 
@@ -139,7 +141,7 @@ class MediaUploaderTest extends TestCase
         $file = UploadedFile::fake()->image('test.png');
         $fileContent = file_get_contents($file->getRealPath());
         $base64 = base64_encode($fileContent);
-        $dataUri = 'data:image/png;base64,' . $base64;
+        $dataUri = 'data:image/png;base64,'.$base64;
 
         $media = MediaUploader::fromBase64($dataUri, 'test.png')->upload();
 

@@ -4,15 +4,12 @@ namespace Turahe\Media\Tests;
 
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Turahe\Media\Models\Media as BaseMedia;
 use Turahe\Media\Tests\Models\Media;
 use Turahe\Media\Tests\Models\Subject;
 
 class HasMediaTest extends TestCase
 {
-    use RefreshDatabase;
-
     protected $subject;
 
     protected function setUp(): void

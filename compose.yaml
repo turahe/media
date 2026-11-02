@@ -1,49 +1,144 @@
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Docker Compose reference guide at
-# https://docs.docker.com/go/compose-spec-reference/
+name: turahe-media
 
-# Here the instructions define your application as a service called "server".
-# This service is built from the Dockerfile in the current directory.
-# You can add other services your application may depend on here, such as a
-# database or a cache. For examples, see the Awesome Compose repository:
-# https://github.com/docker/awesome-compose
 services:
   server:
+    profiles: ["test"]
     build:
       context: .
+      args:
+        PHP_VERSION: ${PHP_VERSION:-8.4}
+    networks:
+      - media
+    environment:
+      DB_CONNECTION: ${DB_CONNECTION:-sqlite}
+      DB_HOST: ${DB_HOST:-}
+      DB_PORT: ${DB_PORT:-}
+      DB_DATABASE: ${DB_DATABASE:-media}
+      DB_USERNAME: ${DB_USERNAME:-media}
+      DB_PASSWORD: ${DB_PASSWORD:-media}
+      MEDIA_RESIZE_DRIVER: imgproxy
+      IMGPROXY_URL: http://imgproxy:8080
+      IMGPROXY_KEY: ${IMGPROXY_KEY:-}
+      IMGPROXY_SALT: ${IMGPROXY_SALT:-}
+      IMGPROXY_SOURCE_URL: ${IMGPROXY_SOURCE_URL:-}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      imgproxy:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: media
+      MYSQL_USER: media
+      MYSQL_PASSWORD: media
+      MYSQL_ROOT_PASSWORD: root
     ports:
-      - 9000:80
+      - "${MYSQL_PUBLISH_PORT:-33060}:3306"
+    networks:
+      - media
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+    volumes:
+      - mysql-data:/var/lib/mysql
 
-# The commented out section below is an example of how to define a PostgreSQL
-# database that your application can use. `depends_on` tells Docker Compose to
-# start the database before your application. The `db-data` volume persists the
-# database data between container restarts. The `db-password` secret is used
-# to set the database password. You must create `db/password.txt` and add
-# a password of your choosing to it before running `docker-compose up`.
-#     depends_on:
-#       db:
-#         condition: service_healthy
-#   db:
-#     image: postgres
-#     restart: always
-#     user: postgres
-#     secrets:
-#       - db-password
-#     volumes:
-#       - db-data:/var/lib/postgresql/data
-#     environment:
-#       - POSTGRES_DB=example
-#       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
-#     expose:
-#       - 5432
-#     healthcheck:
-#       test: [ "CMD", "pg_isready" ]
-#       interval: 10s
-#       timeout: 5s
-#       retries: 5
-# volumes:
-#   db-data:
-# secrets:
-#   db-password:
-#     file: db/password.txt
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: media
+      POSTGRES_USER: media
+      POSTGRES_PASSWORD: media
+    ports:
+      - "${POSTGRES_PUBLISH_PORT:-54320}:5432"
+    networks:
+      - media
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U media -d media"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
 
+  imgproxy:
+    image: darthsim/imgproxy:latest
+    environment:
+      IMGPROXY_BIND: ":8080"
+      IMGPROXY_KEY: ${IMGPROXY_KEY:-}
+      IMGPROXY_SALT: ${IMGPROXY_SALT:-}
+      IMGPROXY_DEVELOPMENT_ERRORS_MODE: "true"
+      IMGPROXY_ALLOW_PRIVATE_SOURCE_ADDRESSES: "true"
+      IMGPROXY_ALLOW_LOOPBACK_SOURCE_ADDRESSES: "true"
+      IMGPROXY_ALLOW_LINK_LOCAL_SOURCE_ADDRESSES: "true"
+      IMGPROXY_USE_S3: "true"
+      IMGPROXY_S3_ENDPOINT: http://rustfs:9000
+      IMGPROXY_S3_REGION: us-east-1
+      IMGPROXY_S3_ENDPOINT_USE_PATH_STYLE: "true"
+      AWS_ACCESS_KEY_ID: ${RUSTFS_ACCESS_KEY:-MEDIAUPLOAD}
+      AWS_SECRET_ACCESS_KEY: ${RUSTFS_SECRET_KEY:-media-s3-secret}
+      AWS_REGION: us-east-1
+    ports:
+      - "${IMGPROXY_PUBLISH_PORT:-8081}:8080"
+    depends_on:
+      rustfs:
+        condition: service_healthy
+    networks:
+      - media
+    healthcheck:
+      test: ["CMD", "imgproxy", "health"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 5s
+
+  rustfs-init:
+    image: alpine:3
+    user: "0:0"
+    command: ["chown", "-R", "10001:10001", "/data"]
+    volumes:
+      - rustfs-data:/data
+    restart: "no"
+
+  rustfs:
+    image: rustfs/rustfs:latest
+    depends_on:
+      rustfs-init:
+        condition: service_completed_successfully
+    environment:
+      RUSTFS_ACCESS_KEY: ${RUSTFS_ACCESS_KEY:-MEDIAUPLOAD}
+      RUSTFS_SECRET_KEY: ${RUSTFS_SECRET_KEY:-media-s3-secret}
+      RUSTFS_ADDRESS: ":9000"
+      RUSTFS_CONSOLE_ADDRESS: ":9001"
+      RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_REGION: us-east-1
+      RUSTFS_VOLUMES: /data
+    ports:
+      - "${RUSTFS_PUBLISH_PORT:-9010}:9000"
+      - "${RUSTFS_CONSOLE_PUBLISH_PORT:-9011}:9001"
+    volumes:
+      - rustfs-data:/data
+    networks:
+      - media
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:9000/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+networks:
+  media:
+    name: turahe-media
+
+volumes:
+  mysql-data:
+  postgres-data:
+  rustfs-data:

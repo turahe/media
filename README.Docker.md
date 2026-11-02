@@ -1,22 +1,29 @@
-### Building and running your application
+### Services
 
-When you're ready, start your application by running:
-`docker compose up --build`.
+Start MySQL, PostgreSQL, RustFS, and imgproxy:
 
-Your application will be available at http://localhost:9000.
+```bash
+make up
+```
 
-### PHP extensions
-If your application requires specific PHP extensions to run, they will need to be added to the Dockerfile. Follow the instructions and example in the Dockerfile to add them.
+From the host, MySQL is on `localhost:33060`, PostgreSQL on `localhost:54320`, RustFS S3 on `http://localhost:9010`, the RustFS console on `http://localhost:9011`, and imgproxy on `http://localhost:8081`. Inside Compose they stay on `mysql:3306`, `postgres:5432`, `rustfs:9000`, and `imgproxy:8080`. Database name, user, and password are `media` (`root` / `root` for the MySQL root account). RustFS credentials are `MEDIAUPLOAD` / `media-s3-secret`, and the bucket used by the S3 test is `media`. Override the host ports with `MYSQL_PUBLISH_PORT`, `POSTGRES_PUBLISH_PORT`, `RUSTFS_PUBLISH_PORT`, `RUSTFS_CONSOLE_PUBLISH_PORT`, and `IMGPROXY_PUBLISH_PORT`.
 
-### Deploying your application to the cloud
+### Tests
 
-First, build your image, e.g.: `docker build -t myapp .`.
-If your cloud uses a different CPU architecture than your development
-machine (e.g., you are on a Mac M1 and your cloud provider is amd64),
-you'll want to build the image for that platform, e.g.:
-`docker build --platform=linux/amd64 -t myapp .`.
+SQLite, inside the PHP image:
 
-Then, push it to your registry, e.g. `docker push myregistry.com/myapp`.
+```bash
+make test
+```
 
-Consult Docker's [getting started](https://docs.docker.com/go/get-started-sharing/)
-docs for more detail on building and pushing.
+The same suite against MySQL and PostgreSQL on the Compose network:
+
+```bash
+make test-databases
+```
+
+Upload an image to RustFS and resize it with imgproxy over S3:
+
+```bash
+make test-s3
+```

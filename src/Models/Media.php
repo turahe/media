@@ -2,6 +2,7 @@
 
 namespace Turahe\Media\Models;
 
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
@@ -9,6 +10,8 @@ use Illuminate\Support\Str;
 use Kalnoy\Nestedset\NodeTrait;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
+use Turahe\Media\Resize\ResizeManager;
+use Turahe\Media\Resize\ResizeOptions;
 
 class Media extends Model implements Sortable
 {
@@ -88,9 +91,75 @@ class Media extends Model implements Sortable
      */
     public function getUrl(string $conversion = '')
     {
+        $conversionOptions = $this->onTheFlyConversion($conversion);
+
+        if ($conversionOptions !== null) {
+            return $this->resizeUrl(
+                (int) ($conversionOptions['width'] ?? 0),
+                (int) ($conversionOptions['height'] ?? 0),
+                $conversionOptions,
+            );
+        }
+
         return $this->filesystem()->url(
             $this->getPath($conversion)
         );
+    }
+
+    /**
+     * URL of this file resized on the fly by the configured driver.
+     */
+    public function resizeUrl(int $width, int $height = 0, array $options = []): string
+    {
+        $options['width'] = $options['width'] ?? $width;
+        $options['height'] = $options['height'] ?? $height;
+
+        if (! array_key_exists('extension', $options) && $this->extension) {
+            $options['extension'] = $this->extension;
+        }
+
+        return app(ResizeManager::class)->url(
+            $this->resizeSourceUrl(),
+            ResizeOptions::fromArray($options),
+        );
+    }
+
+    /**
+     * Absolute URL imgproxy (or another driver) can fetch.
+     * S3 disks use the s3:// scheme so imgproxy reads the object with its own credentials.
+     */
+    public function resizeSourceUrl(): string
+    {
+        $disk = config('filesystems.disks.'.$this->disk);
+
+        if (is_array($disk) && ($disk['driver'] ?? null) === 's3' && ! empty($disk['bucket'])) {
+            return 's3://'.$disk['bucket'].'/'.ltrim($this->getPath(), '/');
+        }
+
+        $url = $this->filesystem()->url($this->getPath());
+
+        if (preg_match('#^https?://#i', (string) $url) === 1) {
+            return $url;
+        }
+
+        $base = rtrim((string) config('media.resize.source_url', ''), '/');
+
+        if ($base === '') {
+            return $url;
+        }
+
+        return $base.'/'.ltrim((string) $url, '/');
+    }
+
+    protected function onTheFlyConversion(string $conversion): ?array
+    {
+        if ($conversion === '') {
+            return null;
+        }
+
+        $options = config('media.conversions.'.$conversion);
+
+        return is_array($options) ? $options : null;
     }
 
     /**
@@ -132,7 +201,7 @@ class Media extends Model implements Sortable
     /**
      * Get the filesystem where the associated file is stored.
      *
-     * @return \Illuminate\Contracts\Filesystem\Filesystem
+     * @return Filesystem
      */
     public function filesystem()
     {

@@ -2,9 +2,10 @@
 
 namespace Turahe\Media\Tests\Database\Factories;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Turahe\Media\Tests\Models\Media;
 
-class MediaFactory extends \Illuminate\Database\Eloquent\Factories\Factory
+class MediaFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.

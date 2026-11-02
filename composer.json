@@ -11,15 +11,15 @@
     "require": {
         "php": "^8.4",
         "guzzlehttp/guzzle": "^7.9",
-        "kalnoy/nestedset": "^6.0",
-        "spatie/eloquent-sortable": "^4.4"
+        "kalnoy/nestedset": "^6.0.6 || ^7.0",
+        "spatie/eloquent-sortable": "^5.0"
     },
     "require-dev": {
         "ext-imagick": "*",
         "laravel/pint": "^1.17",
         "league/flysystem-aws-s3-v3": "^3.0",
         "mockery/mockery": "^1.6",
-        "orchestra/testbench": "^8.0|^9.0||^10.0",
+        "orchestra/testbench": "^10.0 || ^11.0",
         "phpstan/phpstan": "^2.0"
     },
     "conflict": {
@@ -49,6 +49,7 @@
     "scripts": {
         "analyse": "vendor/bin/phpstan analyse src tests",
         "baseline": "vendor/bin/phpstan analyse --generate-baseline",
+        "pint": "vendor/bin/pint",
         "test": "vendor/bin/phpunit --testdox"
     },
     "config": {

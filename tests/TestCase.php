@@ -3,12 +3,12 @@
 namespace Turahe\Media\Tests;
 
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\WithFaker;
+use Turahe\Media\MediaServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
-    use RefreshDatabase;
     use WithFaker;
 
     protected function setUp(): void
@@ -21,34 +21,71 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function getPackageProviders($app)
     {
         return [
-            \Turahe\Media\MediaServiceProvider::class,
+            MediaServiceProvider::class,
         ];
     }
 
     /**
-     * @param  \Illuminate\Foundation\Application  $app
+     * @param  Application  $app
      */
     protected function getEnvironmentSetUp($app)
     {
+        $connection = getenv('DB_CONNECTION') ?: 'sqlite';
+
         $app['config']->set('filesystems.default', 'local');
-        $app['config']->set('database.default', 'sqlite');
+        $app['config']->set('database.default', $connection);
         $app['config']->set('database.connections.sqlite', [
             'driver' => 'sqlite',
             'database' => ':memory:',
             'prefix' => '',
+        ]);
+        $app['config']->set('database.connections.mysql', [
+            'driver' => 'mysql',
+            'host' => getenv('DB_HOST') ?: '127.0.0.1',
+            'port' => getenv('DB_PORT') ?: '3306',
+            'database' => getenv('DB_DATABASE') ?: 'media',
+            'username' => getenv('DB_USERNAME') ?: 'media',
+            'password' => getenv('DB_PASSWORD') ?: 'media',
+            'unix_socket' => '',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+        ]);
+        $app['config']->set('database.connections.pgsql', [
+            'driver' => 'pgsql',
+            'host' => getenv('DB_HOST') ?: '127.0.0.1',
+            'port' => getenv('DB_PORT') ?: '5432',
+            'database' => getenv('DB_DATABASE') ?: 'media',
+            'username' => getenv('DB_USERNAME') ?: 'media',
+            'password' => getenv('DB_PASSWORD') ?: 'media',
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'search_path' => 'public',
+            'sslmode' => 'prefer',
         ]);
         $app['config']->set('app.key', 'base64:MFOsOH9RomiI2LRdgP4hIeoQJ5nyBhdABdH77UY2zi8=');
     }
 
     protected function setUpDatabase()
     {
-        $this->app['db']->connection()->getSchemaBuilder()->create('cache', function (Blueprint $table) {
+        $schema = $this->app['db']->connection()->getSchemaBuilder();
+
+        $schema->dropIfExists('mediables');
+        $schema->dropIfExists('subjects');
+        $schema->dropIfExists('media');
+        $schema->dropIfExists('cache');
+
+        $schema->create('cache', function (Blueprint $table) {
             $table->string('key')->unique();
             $table->text('value');
             $table->integer('expiration');
         });
 
-        $this->app['db']->connection()->getSchemaBuilder()->create('media', function (Blueprint $table) {
+        $schema->create('media', function (Blueprint $table) {
             $table->id();
             $table->string('hash');
             $table->string('name');
@@ -65,13 +102,13 @@ class TestCase extends \Orchestra\Testbench\TestCase
             $table->timestamps();
         });
 
-        $this->app['db']->connection()->getSchemaBuilder()->create('mediables', function (Blueprint $table) {
+        $schema->create('mediables', function (Blueprint $table) {
             $table->unsignedBigInteger('media_id')->index();
             $table->morphs('mediable');
             $table->string('group');
         });
 
-        $this->app['db']->connection()->getSchemaBuilder()->create('subjects', function (Blueprint $table) {
+        $schema->create('subjects', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
         });

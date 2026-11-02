@@ -178,41 +178,22 @@ $post->getFirstMediaUrl('custom-group');
 
 ## Image Manipulation & Conversions
 
-You can define image conversions (e.g., thumbnails) using the familiar `intervention/image` library. Register conversions in a service provider:
+Images are resized on the fly by the configured driver. The default driver is [imgproxy](https://docs.imgproxy.net/). Set `IMGPROXY_URL`, and a hex-encoded `IMGPROXY_KEY` and `IMGPROXY_SALT` when URL signatures are enabled. `IMGPROXY_SOURCE_URL` is prepended to relative disk URLs so imgproxy can fetch the original. An `s3` disk is passed to imgproxy as `s3://bucket/key`, so imgproxy reads the object with its own S3 credentials.
+
+Define named sizes in `config/media.php`:
 
 ```php
-use Intervention\Image\Image;
-use Turahe\Media\Facades\Conversion;
-
-class AppServiceProvider extends ServiceProvider
-{
-    public function boot()
-    {
-        Conversion::register('thumb', function (Image $image) {
-            return $image->fit(64, 64);
-        });
-    }
-}
+'conversions' => [
+    'thumb' => ['width' => 64, 'height' => 64, 'resizing_type' => 'fill'],
+],
 ```
 
-Configure a media group to perform conversions:
+`resizing_type` is one of `fit`, `fill`, `fill-down`, `force`, or `auto`.
 
 ```php
-class Post extends Model
-{
-    use HasMedia;
-    
-    public function registerMediaGroups()
-    {
-        $this->addMediaGroup('gallery')
-             ->performConversions('thumb');
-    }
-}
-```
-
-Get the URL of a converted image:
-
-```php
-// The thumbnail of the first image in the gallery group
+// Named conversion
 $post->getFirstMediaUrl('gallery', 'thumb');
+
+// Arbitrary size
+$media->resizeUrl(300, 200, ['resizing_type' => 'fit', 'quality' => 80]);
 ```
