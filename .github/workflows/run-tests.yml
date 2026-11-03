@@ -29,10 +29,6 @@ jobs:
             testbench: '10.0'
           - laravel: '13'
             testbench: '11.0'
-          - php: '8.4'
-            laravel: '13'
-            dependency-versions: prefer-stable
-            coverage: true
 
     steps:
       - name: Checkout code
@@ -52,57 +48,12 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: mbstring, gd, imagick, pdo_sqlite, zip
-          coverage: ${{ matrix.coverage && 'pcov' || 'none' }}
+          coverage: none
           tools: composer:v2
 
       - name: Install dependencies
         run: composer update --prefer-dist --no-interaction --no-progress --with-all-dependencies --${{ matrix.dependency-versions }} --with="laravel/framework:^${{ matrix.laravel }}.0" --with="orchestra/testbench:^${{ matrix.testbench }}"
 
       - name: Execute tests
-        run: vendor/bin/phpunit --do-not-cache-result ${{ matrix.coverage && '--coverage-clover=coverage.xml' || '' }}
+        run: vendor/bin/phpunit --do-not-cache-result # Coverage runs in code-coverage.yml.
 
-      - name: Upload coverage
-        if: matrix.coverage
-        uses: actions/upload-artifact@v7
-        with:
-          name: coverage
-          path: coverage.xml
-          retention-days: 1
-          if-no-files-found: error
-
-      - name: Upload coverage to Codecov
-        if: matrix.coverage
-        uses: codecov/codecov-action@v7
-        with:
-          files: ./coverage.xml
-          flags: sqlite-tests
-          name: codecov-php-${{ matrix.php }}-laravel-${{ matrix.laravel }}
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: false
-
-  sonarqube:
-    name: SonarQube
-    needs: test
-    if: needs.test.result == 'success' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false)
-    runs-on: ubuntu-26.04
-    timeout-minutes: 15
-    permissions:
-      contents: read
-      pull-requests: read
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-
-      - name: Download coverage
-        uses: actions/download-artifact@v8
-        with:
-          name: coverage
-          path: .
-
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v8.4.0
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
